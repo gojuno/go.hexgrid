@@ -3,7 +3,7 @@ package hexgrid
 import (
 	"math"
 
-	morton "github.com/juno-lab/go.morton"
+	morton "github.com/gojuno/go.morton"
 )
 
 type Point struct {
