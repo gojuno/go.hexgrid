@@ -33,7 +33,7 @@ type Grid struct {
 	orientation Orientation
 	origin      Point
 	size        Point
-	mort        morton.Morton64
+	mort        *morton.Morton64
 }
 
 type Region struct {
@@ -147,7 +147,7 @@ func (fhex FractionalHex) ToHex() Hex {
 	return Hex{q: q, r: r}
 }
 
-func MakeGrid(orientation Orientation, origin Point, size Point, mort morton.Morton64) *Grid {
+func MakeGrid(orientation Orientation, origin Point, size Point, mort *morton.Morton64) *Grid {
 	return &Grid{orientation: orientation, origin: origin, size: size, mort: mort}
 }
 
