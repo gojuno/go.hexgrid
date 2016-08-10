@@ -215,6 +215,7 @@ func pointInGeometry(geometry []Point, point Point) bool {
 	return contains
 }
 
+/* from https://github.com/kellydunn/golang-geo */
 func intersectsWithRaycast(point Point, start Point, end Point) bool {
 	if start.Y() > end.Y() {
 		start, end = end, start
