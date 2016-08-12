@@ -39,7 +39,7 @@ type Grid struct {
 type Region struct {
 	grid   *Grid
 	hexes  []Hex
-	lookup map[uint64]int
+	lookup map[int64]int
 }
 
 var PointyOrientation = Orientation{
@@ -151,11 +151,11 @@ func MakeGrid(orientation Orientation, origin Point, size Point, mort *morton.Mo
 	return &Grid{orientation: orientation, origin: origin, size: size, mort: mort}
 }
 
-func (grid *Grid) HexToCode(hex Hex) uint64 {
+func (grid *Grid) HexToCode(hex Hex) int64 {
 	return grid.mort.SPack2(hex.Q(), hex.R())
 }
 
-func (grid *Grid) HexFromCode(code uint64) Hex {
+func (grid *Grid) HexFromCode(code int64) Hex {
 	q, r := grid.mort.SUnpack2(code)
 	return MakeHex(q, r)
 }
@@ -306,7 +306,7 @@ func (grid *Grid) MakeRegion(geometry []Point) *Region {
 		}
 	}
 
-	lookup := make(map[uint64]int)
+	lookup := make(map[int64]int)
 	for i := 0; i < len(hexes); i++ {
 		lookup[grid.HexToCode(hexes[i])] = i
 	}
