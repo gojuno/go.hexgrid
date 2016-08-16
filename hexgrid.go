@@ -185,7 +185,7 @@ func (grid *Grid) HexCorners(hex Hex) [6]Point {
 	return corners
 }
 
-func (grid *Grid) HexNeighbors(hex Hex, layers int64) []Hex {
+func (grid *Grid) HexNeighbors(hex Hex, layers int) []Hex {
 	total := (layers + 1) * layers * 3
 	neighbors := make([]Hex, total)
 	i := 0
@@ -200,7 +200,6 @@ func (grid *Grid) HexNeighbors(hex Hex, layers int64) []Hex {
 			i += 1
 		}
 	}
-
 	return neighbors
 }
 
@@ -211,7 +210,6 @@ func pointInGeometry(geometry []Point, point Point) bool {
 			contains = !contains
 		}
 	}
-
 	return contains
 }
 
