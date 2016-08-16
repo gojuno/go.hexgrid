@@ -152,12 +152,12 @@ func MakeGrid(orientation Orientation, origin Point, size Point, mort *morton.Mo
 }
 
 func (grid *Grid) HexToCode(hex Hex) int64 {
-	return grid.mort.SPack2(hex.Q(), hex.R())
+	return grid.mort.SPack(hex.Q(), hex.R())
 }
 
 func (grid *Grid) HexFromCode(code int64) Hex {
-	q, r := grid.mort.SUnpack2(code)
-	return MakeHex(q, r)
+	qr := grid.mort.SUnpack(code)
+	return MakeHex(qr[0], qr[1])
 }
 
 func (grid *Grid) HexAt(point Point) Hex {
