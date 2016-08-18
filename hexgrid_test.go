@@ -83,3 +83,24 @@ func TestNeighbors(t *testing.T) {
 		}
 	}
 }
+
+func TestRegion(t *testing.T) {
+	grid := MakeGrid(FlatOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	geometry := [6]Point{
+		MakePoint(20, 30), MakePoint(20, 40), MakePoint(40, 60),
+		MakePoint(60, 40), MakePoint(50, 30), MakePoint(40, 40)}
+	region := grid.MakeRegion(geometry[:])
+	hexes := region.Hexes()
+	expectedHexCodes := []int64{2, 1, 3, 9, 4}
+	if len(hexes) != len(expectedHexCodes) {
+		t.Errorf("expected %d hexes but got %d", len(expectedHexCodes), len(hexes))
+		return
+	}
+	for i := 0; i < len(hexes); i++ {
+		code := grid.HexToCode(hexes[i])
+		if expectedHexCodes[i] != code {
+			t.Errorf("expected hex with code %d but got %d", expectedHexCodes[i], code)
+			return
+		}
+	}
+}

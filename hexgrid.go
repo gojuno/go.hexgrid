@@ -235,7 +235,6 @@ func intersectsWithRaycast(point Point, start Point, end Point) bool {
 		if point.X() < end.X() {
 			return true
 		}
-
 	} else {
 		if point.X() > end.X() {
 			return false
