@@ -14,7 +14,7 @@ func validateHex(t *testing.T, e Hex, r Hex) {
 }
 
 func TestFlat(t *testing.T) {
-	grid := MakeGrid(FlatOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	grid := MakeGrid(OrientationFlat, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
 	validateHex(t, MakeHex(0, 37), grid.HexAt(MakePoint(13, 666)))
 	validateHex(t, MakeHex(22, -11), grid.HexAt(MakePoint(666, 13)))
 	validateHex(t, MakeHex(-1, -39), grid.HexAt(MakePoint(-13, -666)))
@@ -22,7 +22,7 @@ func TestFlat(t *testing.T) {
 }
 
 func TestPointy(t *testing.T) {
-	grid := MakeGrid(PointyOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	grid := MakeGrid(OrientationPointy, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
 	validateHex(t, MakeHex(-21, 43), grid.HexAt(MakePoint(13, 666)))
 	validateHex(t, MakeHex(19, 0), grid.HexAt(MakePoint(666, 13)))
 	validateHex(t, MakeHex(22, -46), grid.HexAt(MakePoint(-13, -666)))
@@ -36,7 +36,7 @@ func validatePoint(t *testing.T, e Point, r Point, precision float64) {
 }
 
 func TestCoordinatesFlat(t *testing.T) {
-	grid := MakeGrid(FlatOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	grid := MakeGrid(OrientationFlat, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
 	hex := grid.HexAt(MakePoint(666, 666))
 	validatePoint(t, MakePoint(670.00000, 660.85880), grid.HexCenter(hex), 0.00001)
 	expectedCorners := [6]Point{
@@ -53,7 +53,7 @@ func TestCoordinatesFlat(t *testing.T) {
 }
 
 func TestCoordinatesPointy(t *testing.T) {
-	grid := MakeGrid(PointyOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	grid := MakeGrid(OrientationPointy, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
 	hex := grid.HexAt(MakePoint(666, 666))
 	validatePoint(t, MakePoint(650.85880, 665.00000), grid.HexCenter(hex), 0.00001)
 	expectedCorners := [6]Point{
@@ -70,7 +70,7 @@ func TestCoordinatesPointy(t *testing.T) {
 }
 
 func TestNeighbors(t *testing.T) {
-	grid := MakeGrid(FlatOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	grid := MakeGrid(OrientationFlat, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
 	hex := grid.HexAt(MakePoint(666, 666))
 	expectedNeighbors := [18]int64{
 		920, 922, 944, 915, 921, 923, 945, 916, 918,
@@ -85,13 +85,13 @@ func TestNeighbors(t *testing.T) {
 }
 
 func TestRegion(t *testing.T) {
-	grid := MakeGrid(FlatOrientation, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
+	grid := MakeGrid(OrientationFlat, MakePoint(10, 20), MakePoint(20, 10), morton.Make64(2, 32))
 	geometry := [6]Point{
-		MakePoint(20, 30), MakePoint(20, 40), MakePoint(40, 60),
+		MakePoint(20, 19.99999), MakePoint(20, 40), MakePoint(40, 60),
 		MakePoint(60, 40), MakePoint(50, 30), MakePoint(40, 40)}
 	region := grid.MakeRegion(geometry[:])
 	hexes := region.Hexes()
-	expectedHexCodes := []int64{2, 1, 3, 9, 4}
+	expectedHexCodes := []int64{0, 2, 1, 3, 9, 4}
 	if len(hexes) != len(expectedHexCodes) {
 		t.Errorf("expected %d hexes but got %d", len(expectedHexCodes), len(hexes))
 		return

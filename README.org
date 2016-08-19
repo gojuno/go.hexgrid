@@ -8,7 +8,7 @@ import "github.com/gojuno/go.hexgrid"
 
 center := hexgrid.MakePoint(0, 0)
 size := hexgrid.MakePoint(20, 10)
-grid := hexgrid.MakeGrid(hexgrid.FlatOrientation, center, size, morton.Make64(2, 32))
+grid := hexgrid.MakeGrid(hexgrid.OrientationFlat, center, size, morton.Make64(2, 32))
 hex := grid.HexAt(hexgrid.MakePoint(50, 50))
 code := grid.HexToCode(hex)
 restoredHex := grid.HexFromCode(code)

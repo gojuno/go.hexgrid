@@ -42,19 +42,19 @@ type Region struct {
 	lookup map[int64]int
 }
 
-var PointyOrientation = Orientation{
+var OrientationPointy = Orientation{
 	f:          [4]float64{math.Sqrt(3.0), math.Sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0},
 	b:          [4]float64{math.Sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0},
 	startAngle: 0.5}
 
-var FlatOrientation = Orientation{
+var OrientationFlat = Orientation{
 	f:          [4]float64{3.0 / 2.0, 0.0, math.Sqrt(3.0) / 2.0, math.Sqrt(3.0)},
 	b:          [4]float64{2.0 / 3.0, 0.0, -1.0 / 3.0, math.Sqrt(3.0) / 3.0},
 	startAngle: 0.0}
 
 func init() {
-	prehashAngles(&PointyOrientation)
-	prehashAngles(&FlatOrientation)
+	prehashAngles(&OrientationPointy)
+	prehashAngles(&OrientationFlat)
 }
 
 func prehashAngles(orientation *Orientation) {
