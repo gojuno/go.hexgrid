@@ -203,16 +203,6 @@ func (grid *Grid) HexNeighbors(hex Hex, layers int64) []Hex {
 	return neighbors
 }
 
-func pointInGeometry(geometry []Point, point Point) bool {
-	contains := intersectsWithRaycast(point, geometry[len(geometry)-1], geometry[0])
-	for i := 1; i < len(geometry); i++ {
-		if intersectsWithRaycast(point, geometry[i-1], geometry[i]) {
-			contains = !contains
-		}
-	}
-	return contains
-}
-
 /* from https://github.com/kellydunn/golang-geo */
 func intersectsWithRaycast(point Point, start Point, end Point) bool {
 	if start.Y() > end.Y() {
@@ -250,23 +240,42 @@ func intersectsWithRaycast(point Point, start Point, end Point) bool {
 	return raySlope >= diagSlope
 }
 
-func (grid *Grid) MakeRegion(geometry []Point) *Region {
-	if geometry[0] == geometry[len(geometry)-1] {
-		geometry = geometry[:len(geometry)-1]
+func pointInGeometry(geometry [][]Point, point Point) bool {
+	contains := false
+	for g := 0; g < len(geometry); g++ {
+		if intersectsWithRaycast(point, geometry[g][len(geometry[g])-1], geometry[g][0]) {
+			contains = !contains
+		}
+		for i := 1; i < len(geometry[g]); i++ {
+			if intersectsWithRaycast(point, geometry[g][i-1], geometry[g][i]) {
+				contains = !contains
+			}
+		}
+	}
+	return contains
+}
+
+func (grid *Grid) MakeRegionFromMultiPolygon(geometry [][]Point) *Region {
+	for g := 0; g < len(geometry); g++ {
+		if geometry[g][0] == geometry[g][len(geometry[g])-1] {
+			geometry[g] = geometry[g][:len(geometry[g])-1]
+		}
 	}
 
-	hex := grid.HexAt(geometry[0])
+	hex := grid.HexAt(geometry[0][0])
 	q1 := hex.Q()
 	q2 := hex.Q()
 	r1 := hex.R()
 	r2 := hex.R()
 
-	for i := 1; i < len(geometry); i++ {
-		hex = grid.HexAt(geometry[i])
-		q1 = min(q1, hex.Q())
-		q2 = max(q2, hex.Q())
-		r1 = min(r1, hex.R())
-		r2 = max(r2, hex.R())
+	for g := 0; g < len(geometry); g++ {
+		for i := 0; i < len(geometry[g]); i++ {
+			hex = grid.HexAt(geometry[g][i])
+			q1 = min(q1, hex.Q())
+			q2 = max(q2, hex.Q())
+			r1 = min(r1, hex.R())
+			r2 = max(r2, hex.R())
+		}
 	}
 
 	q1 -= 1
@@ -281,6 +290,7 @@ func (grid *Grid) MakeRegion(geometry []Point) *Region {
 			hex := MakeHex(q, r)
 			corners := grid.HexCorners(hex)
 			add := false
+
 			for c := 0; c < 6; c++ {
 				if pointInGeometry(geometry, corners[c]) {
 					add = true
@@ -289,9 +299,16 @@ func (grid *Grid) MakeRegion(geometry []Point) *Region {
 			}
 
 			if !add {
-				for i := 0; i < len(geometry); i++ {
-					if pointInGeometry(corners[:], geometry[i]) {
-						add = true
+				mcorners := make([][]Point, 1)
+				mcorners[0] = corners[:]
+				for g := 0; g < len(geometry); g++ {
+					for i := 0; i < len(geometry[g]); i++ {
+						if pointInGeometry(mcorners, geometry[g][i]) {
+							add = true
+							break
+						}
+					}
+					if add == true {
 						break
 					}
 				}
@@ -309,6 +326,12 @@ func (grid *Grid) MakeRegion(geometry []Point) *Region {
 	}
 
 	return &Region{grid: grid, hexes: hexes, lookup: lookup}
+}
+
+func (grid *Grid) MakeRegion(geometry []Point) *Region {
+	mgeometry := make([][]Point, 1)
+	mgeometry[0] = geometry
+	return grid.MakeRegionFromMultiPolygon(mgeometry)
 }
 
 func (region *Region) Hexes() []Hex {
