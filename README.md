@@ -1,8 +1,12 @@
-* HexGrid
-** Basics
+# HexGrid [![GoDoc](https://godoc.org/github.com/gojuno/go.hexgrid?status.svg)](http://godoc.org/github.com/gojuno/go.hexgrid) [![Build Status](https://travis-ci.org/gojuno/go.hexgrid.svg?branch=master)](https://travis-ci.org/gojuno/go.hexgrid)
+
+## Basics
+
 Configurable hex grid on abstract surface.
-** Examples
-#+BEGIN_SRC go
+
+## Examples
+
+```
 import "github.com/gojuno/go.morton"
 import "github.com/gojuno/go.hexgrid"
 
@@ -16,4 +20,4 @@ neighbors := grid.HexNeighbors(hex, 2)
 points := []hexgrid.Point{hexgrid.MakePoint(0, 0), hexgrid.MakePoint(0, 10), hexgrid.MakePoint(10, 10), hexgrid.MakePoint(10, 0)}
 region := grid.MakeRegion(points)
 hexesInRegion := region.Hexes()
-#+END_SRC
+```
